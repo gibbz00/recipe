@@ -1,23 +1,33 @@
+use std::path::Path;
+
 use serde::Deserialize;
 use url::Url;
 
+const MANIFEST_NAME: &str = "Recipe.toml";
+
 #[derive(Deserialize)]
-struct Manifest {
+pub struct Manifest {
     #[serde(rename = "recipe")]
     recipe_metadata: RecipeMetadata,
     #[serde(rename = "package")]
     package_metadata: PackageMetadata,
 }
 
+impl Manifest {
+    pub fn from_recipe_derictory(recipe_directory: &Path) -> anyhow::Result<Self> {
+        toml::from_str::<Manifest>(&std::fs::read_to_string(recipe_directory.join(MANIFEST_NAME))?).map_err(Into::into)
+    }
+}
+
 #[derive(Deserialize)]
-struct RecipeMetadata {
+pub struct RecipeMetadata {
     version: usize,
     maintainers: Vec<String>,
     architectures: Vec<String>,
 }
 
 #[derive(Deserialize)]
-struct PackageMetadata {
+pub struct PackageMetadata {
     name: String,
     version: String,
     description: String,
@@ -28,21 +38,27 @@ struct PackageMetadata {
 }
 
 #[derive(Deserialize)]
-struct PackageDependencies {
+pub struct PackageDependencies {
     build: Vec<String>,
     run: Vec<String>,
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::paths;
+    use crate::paths::{self, repo::template_directory_path};
 
     use super::*;
 
     #[test]
+    fn template_manifest_path_exists() {
+        assert!(template_directory_path()
+            .map(|template_directory| template_directory.join(MANIFEST_NAME))
+            .unwrap()
+            .is_file())
+    }
+
+    #[test]
     fn deserializes_template_manifest() {
-        let template_manifest_path = paths::repo::template_manifest_path().unwrap();
-        let manifest_template_string = std::fs::read_to_string(template_manifest_path).unwrap();
-        toml::from_str::<Manifest>(&manifest_template_string).unwrap();
+        Manifest::from_recipe_derictory(&paths::repo::template_directory_path().unwrap()).unwrap();
     }
 }

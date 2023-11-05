@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+## Usage: `ln scripts/pre-commit.hook .git/hooks/pre-commit`
+
+# Toolchain updates
+rustup update "$(rustup toolchain list | rg override | cut -d ' ' -f1)"
+# Formatting
+cargo fmt -- --check
+# Lints
+cargo clippy --all-features --tests -- -D warnings

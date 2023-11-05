@@ -1,8 +1,7 @@
-[workspace]
-resolver = "2"
+[package]
+name = "rexipe"
+version = "0.1.0"
+edition = "2021"
 
-members = [
-  "crates/*"
-]
+[dependencies]
 
-[workspace.dependencies]

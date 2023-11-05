@@ -1,0 +1,17 @@
+[recipe]
+version = 1
+maintainer = ["Fist Last <email@domain.com>"]
+architectures = ["x86_64", "aarch64"]
+
+[package]
+name = "package-name"
+version = "1.0"
+description = ""
+url = "www.homepage.com"
+licenses = ["MIT", "Apache"]
+tags = ["tui", "packaging"]
+
+[dependencies]
+build = ["make", "git"]
+run = ["bash", "curl"]
+

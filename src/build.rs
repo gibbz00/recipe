@@ -18,10 +18,9 @@ pub fn build(recipe_directory: &Path) -> anyhow::Result<()> {
     }
 
     std::fs::create_dir(&build_directory)?;
-
     std::env::set_current_dir(&build_directory)?;
-    crate::script::run(Script::Build, "../")?;
-    std::env::set_current_dir(recipe_directory)?;
+
+    crate::script::run(Script::Build, recipe_directory)?;
 
     Ok(())
 }

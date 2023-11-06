@@ -10,7 +10,7 @@ pub fn install(recipe_directory: &Path) -> anyhow::Result<()> {
     }
 
     std::env::set_current_dir(&build_directory)?;
-    crate::script::run(Script::Install, "../")
+    crate::script::run(Script::Install, recipe_directory)
 }
 
 #[cfg(test)]

@@ -30,7 +30,7 @@ pub mod repo {
             recipe_contents.push(entry.path())
         }
 
-        fs_extra::copy_items(&recipe_contents, &temp_template_dir, &CopyOptions { ..Default::default() })?;
+        fs_extra::copy_items(&recipe_contents, &temp_template_dir, &CopyOptions::new())?;
 
         f(temp_template_dir.path())
     }

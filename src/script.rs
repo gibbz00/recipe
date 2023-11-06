@@ -1,6 +1,7 @@
-use std::{io::Write, path::Path};
+use std::io::Write;
 
-pub const COMMON_SCRIPT_NAME: &str = "common.bash";
+use crate::recipe_directory::RecipeDirectory;
+
 pub const BUILD_SCRIPT_NAME: &str = "build.bash";
 pub const INSTALL_SCRIPT_NAME: &str = "install.bash";
 
@@ -18,16 +19,11 @@ impl Script {
     }
 }
 
-pub fn run(script: Script, script_directory: impl AsRef<Path>) -> anyhow::Result<()> {
-    let script_directory = script_directory.as_ref();
-    exec(&script_directory.join(COMMON_SCRIPT_NAME))?;
-    exec(&script_directory.join(script.name()))
-}
+pub fn run(script: Script, recipe_directory: &RecipeDirectory) -> anyhow::Result<()> {
+    let script_path = recipe_directory.as_ref().join(script.name());
 
-fn exec(script_path: &Path) -> anyhow::Result<()> {
     // Intentially disallow inheriting stdin from parent.
     let output = std::process::Command::new("bash").arg(script_path).output()?;
-
     std::io::stdout().write_all(&output.stdout)?;
     std::io::stderr().write_all(&output.stderr)?;
 

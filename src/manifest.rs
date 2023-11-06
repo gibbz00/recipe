@@ -1,10 +1,10 @@
 // TEMP:
 #![allow(dead_code)]
 
-use std::path::Path;
-
 use serde::Deserialize;
 use url::Url;
+
+use crate::recipe_directory::RecipeDirectory;
 
 const MANIFEST_NAME: &str = "Recipe.toml";
 
@@ -17,8 +17,8 @@ pub struct Manifest {
 }
 
 impl Manifest {
-    pub fn from_recipe_derictory(recipe_directory: &Path) -> anyhow::Result<Self> {
-        toml::from_str::<Manifest>(&std::fs::read_to_string(recipe_directory.join(MANIFEST_NAME))?).map_err(Into::into)
+    pub fn from_recipe_derictory(recipe_directory: &RecipeDirectory) -> anyhow::Result<Self> {
+        toml::from_str::<Manifest>(&std::fs::read_to_string(recipe_directory.as_ref().join(MANIFEST_NAME))?).map_err(Into::into)
     }
 }
 
@@ -48,20 +48,20 @@ pub struct PackageDependencies {
 
 #[cfg(test)]
 mod tests {
-    use crate::paths::{self, repo::template_directory_path};
+    use crate::paths::{self, repo::template_recipe_directory};
 
     use super::*;
 
     #[test]
     fn template_manifest_path_exists() {
-        assert!(template_directory_path()
-            .map(|template_directory| template_directory.join(MANIFEST_NAME))
+        assert!(template_recipe_directory()
+            .map(|template_directory| template_directory.as_ref().join(MANIFEST_NAME))
             .unwrap()
             .is_file())
     }
 
     #[test]
     fn deserializes_template_manifest() {
-        Manifest::from_recipe_derictory(&paths::repo::template_directory_path().unwrap()).unwrap();
+        Manifest::from_recipe_derictory(&paths::repo::template_recipe_directory().unwrap()).unwrap();
     }
 }

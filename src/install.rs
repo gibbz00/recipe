@@ -1,8 +1,6 @@
-use std::path::Path;
+use crate::{build::build_directory, recipe_directory::RecipeDirectory, script::Script};
 
-use crate::{build::build_directory, script::Script};
-
-pub fn install(recipe_directory: &Path) -> anyhow::Result<()> {
+pub fn install(recipe_directory: &RecipeDirectory) -> anyhow::Result<()> {
     let build_directory = build_directory(recipe_directory);
 
     if !build_directory.is_dir() {
@@ -15,12 +13,12 @@ pub fn install(recipe_directory: &Path) -> anyhow::Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use crate::paths::repo::decoupled_recipe_template;
+    use crate::paths::repo::decoupled_recipe_directory;
 
     use super::*;
 
     #[test]
     fn installs_template() {
-        decoupled_recipe_template(install).unwrap()
+        decoupled_recipe_directory(install).unwrap()
     }
 }

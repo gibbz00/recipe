@@ -1,1 +1,1 @@
-echo "installing..."
+echo "installing..." > /dev/null

@@ -1,1 +1,1 @@
-echo "building..."
+echo "building..." > /dev/null

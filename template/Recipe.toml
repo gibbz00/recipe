@@ -1,7 +1,7 @@
 [recipe]
 version = 1
 maintainers = ["First Last <email@domain.com>"]
-architectures = ["x86_64", "aarch64"]
+targets = ["x86_64", "aarch64"]
 
 [package]
 name = "package-name"
@@ -9,9 +9,9 @@ version = "1.0"
 description = "A short description"
 url = "http://www.homepage.com"
 licenses = ["MIT", "Apache"]
-tags = ["tui", "packaging"]
+tags = ["cli", "packaging"]
 
 [package.dependencies]
-build = ["make", "git"]
-run = ["bash", "curl"]
+build = ["cargo"]
+run = ["bash"]
 

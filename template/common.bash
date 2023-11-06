@@ -1,1 +1,1 @@
-echo "sourcing common utils..."
+echo "sourcing common utils..." > /dev/null

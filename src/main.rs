@@ -1,8 +1,7 @@
-use clap::Parser;
-use recipe::cli::{Args, Execute};
+use recipe::cli::Args;
 
 fn main() {
-    if let Err(err) = Args::parse().execute() {
+    if let Err(err) = Args::evaluate() {
         eprintln!("{err}")
     }
 }

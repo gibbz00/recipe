@@ -23,7 +23,7 @@ impl Manifest {
 pub struct RecipeMetadata {
     version: usize,
     maintainers: Vec<String>,
-    architectures: Vec<String>,
+    targets: Vec<String>,
 }
 
 #[derive(Deserialize)]

@@ -1,48 +1,73 @@
 use std::path::PathBuf;
 
-use crate::manifest::Manifest;
+use clap::Parser;
+
+use self::{build::BuildArgs, check::CheckArgs};
 
 pub trait Execute {
-    fn execute(&self) -> anyhow::Result<()>;
+    fn execute(self) -> anyhow::Result<()>;
 }
 
 #[derive(clap::Parser)]
 pub struct Args {
     #[command(subcommand)]
-    commands: Commands,
+    command: Command,
 }
 
-impl Execute for Args {
-    fn execute(&self) -> anyhow::Result<()> {
-        self.commands.execute()
+impl Args {
+    pub fn evaluate() -> anyhow::Result<()> {
+        let args = Args::parse();
+        args.command.execute()
     }
 }
 
 #[derive(clap::Subcommand)]
-pub enum Commands {
+pub enum Command {
     Check(CheckArgs),
+    Build(BuildArgs),
 }
 
-impl Execute for Commands {
-    fn execute(&self) -> anyhow::Result<()> {
+impl Execute for Command {
+    fn execute(self) -> anyhow::Result<()> {
         match self {
-            Commands::Check(check_args) => check_args.execute(),
+            Command::Check(check_args) => check_args.execute(),
+            Command::Build(build_args) => build_args.execute(),
         }
     }
 }
 
-#[derive(clap::Args)]
-pub struct CheckArgs {
-    /// Defaults to the current working directory
-    #[arg(short, long)]
-    directory: Option<PathBuf>,
+mod check {
+    use super::*;
+
+    #[derive(clap::Args)]
+    pub struct CheckArgs {
+        /// Specify recipe directory, defaults to current.
+        #[arg(short, long)]
+        directory: Option<PathBuf>,
+    }
+
+    impl Execute for CheckArgs {
+        fn execute(self) -> anyhow::Result<()> {
+            let directory = self.directory.unwrap_or_default();
+            crate::check::check(&directory).map(|_| ())
+        }
+    }
 }
 
-impl Execute for CheckArgs {
-    fn execute(&self) -> anyhow::Result<()> {
-        let recipe_directory = self.directory.clone().unwrap_or_default();
-        let _manifest = Manifest::from_recipe_derictory(&recipe_directory)?;
+mod build {
+    use super::*;
 
-        Ok(())
+    #[derive(clap::Args)]
+    pub struct BuildArgs {
+        /// Specify recipe directory, defaults to current.
+        #[arg(short, long)]
+        directory: Option<PathBuf>,
+    }
+
+    impl Execute for BuildArgs {
+        fn execute(self) -> anyhow::Result<()> {
+            let directory = self.directory.unwrap_or_default();
+            crate::build::build(&directory)
+        }
     }
 }

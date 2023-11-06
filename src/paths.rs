@@ -6,7 +6,7 @@ pub mod repo {
     };
 
     use fs_extra::dir::CopyOptions;
-    use tempdir::TempDir;
+    use tempfile::tempdir;
 
     fn repo_root() -> anyhow::Result<PathBuf> {
         std::env::var("CARGO_MANIFEST_DIR").map(PathBuf::from).map_err(Into::into)
@@ -20,7 +20,7 @@ pub mod repo {
     where
         F: FnOnce(&Path) -> anyhow::Result<()>,
     {
-        let temp_template_dir = TempDir::new("decopled_recipe_test")?;
+        let temp_template_dir = tempdir()?;
 
         let read_dir = fs::read_dir(template_directory_path()?)?;
 

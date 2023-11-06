@@ -1,4 +1,4 @@
-use std::io::Write;
+use std::process::Stdio;
 
 use crate::recipe_directory::RecipeDirectory;
 
@@ -22,14 +22,11 @@ impl Script {
 pub fn run(script: Script, recipe_directory: &RecipeDirectory) -> anyhow::Result<()> {
     let script_path = recipe_directory.as_ref().join(script.name());
 
-    // Intentially disallow inheriting stdin from parent.
-    let output = std::process::Command::new("bash").arg(script_path).output()?;
-    std::io::stdout().write_all(&output.stdout)?;
-    std::io::stderr().write_all(&output.stderr)?;
+    std::process::Command::new("bash")
+        .stdin(Stdio::null())
+        .arg(script_path)
+        .spawn()?
+        .wait()?;
 
-    // TEMP: until https://doc.rust-lang.org/std/process/struct.ExitStatus.html#method.exit_ok is stabalized.
-    match output.status.success() {
-        true => Ok(()),
-        false => anyhow::bail!("script execution failed, aborting"),
-    }
+    Ok(())
 }

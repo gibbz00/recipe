@@ -54,7 +54,7 @@ mod check {
 
     impl Execute for CheckArgs {
         fn execute(self) -> anyhow::Result<()> {
-            let directory = self.directory.unwrap_or_default().try_into()?;
+            let directory = self.directory.try_into()?;
             crate::check::check(&directory).map(|_| ())
         }
     }
@@ -72,7 +72,7 @@ mod build {
 
     impl Execute for BuildArgs {
         fn execute(self) -> anyhow::Result<()> {
-            let directory = self.directory.unwrap_or_default().try_into()?;
+            let directory = self.directory.try_into()?;
             crate::build::build(&directory)
         }
     }
@@ -90,7 +90,7 @@ mod install {
 
     impl Execute for InstallArgs {
         fn execute(self) -> anyhow::Result<()> {
-            let directory = self.directory.unwrap_or_default().try_into()?;
+            let directory = self.directory.try_into()?;
             crate::install::install(&directory)
         }
     }

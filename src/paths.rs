@@ -14,6 +14,7 @@ pub mod repo {
     pub fn template_recipe_directory() -> anyhow::Result<RecipeDirectory> {
         repo_root()
             .map(|repo_root| repo_root.join("template"))?
+            .as_path()
             .try_into()
             .map_err(Into::into)
     }
